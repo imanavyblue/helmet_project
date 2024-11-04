@@ -3,10 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Helmet Detection Video Stream</title>
+    <title>Helmet Detection System</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            margin: 20px;
+        }
+        .video-feed {
+            margin-right: 20px;
+        }
+        .detected-classes {
+            max-width: 300px;
+        }
+        .detected-classes h3 {
+            font-size: 1.5em;
+        }
+        .detected-classes ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .detected-classes li {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <h1>Helmet Detection Video Stream</h1>
-    <img src="{{ url_for('video_feed') }}" width="640" height="480">
+    <h1>Helmet Detection System</h1>
+    <div class="container">
+        <div class="video-feed">
+            <h3>Live Video Feed:</h3>
+            <img src="{{ url_for('video_feed') }}" width="800">
+        </div>
+        <div class="detected-classes">
+            <h3>Detected Classes:</h3>
+            <ul id="detected-classes-list">
+                <!-- Detected classes จะถูกเติมลงในนี้โดย JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function fetchDetectedClasses() {
+            $.getJSON('/get_detected_classes', function(data) {
+                // ลบข้อมูลเดิม
+                $('#detected-classes-list').empty();
+
+                // เพิ่มข้อมูลใหม่
+                data.forEach(function(detectedClass) {
+                    $('#detected-classes-list').append('<li>' + detectedClass + '</li>');
+                });
+            });
+        }
+
+        // เรียกฟังก์ชัน fetchDetectedClasses ทุกๆ 1 วินาที
+        setInterval(fetchDetectedClasses, 1000);
+    </script>
 </body>
 </html>
